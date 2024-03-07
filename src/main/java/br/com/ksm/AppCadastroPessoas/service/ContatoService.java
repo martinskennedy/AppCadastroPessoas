@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ksm.AppCadastroPessoas.exception.ResourceNotFoundException;
 import br.com.ksm.AppCadastroPessoas.model.Contato;
 import br.com.ksm.AppCadastroPessoas.model.Pessoa;
 import br.com.ksm.AppCadastroPessoas.repository.ContatoRepository;
@@ -31,15 +32,13 @@ public class ContatoService implements ContatoServiceInterface {
 				if (contato.getPessoa().getId() != null) {
 					Optional<Pessoa> findPessoa = pessoaRepository.findById(contato.getPessoa().getId());
 					if (findPessoa.isEmpty()) {
-						System.out.println("Pessoa não encontrada");
-						return null;
+						throw new ResourceNotFoundException("[Contato] Pessoa não encontrada");
 					}else {
 						contato.setPessoa(findPessoa.get());
 						return contatoRepository.save(contato);
 					}		
 				}else {
-					System.out.println("Pessoa está vazio");
-					return null;
+					throw new ResourceNotFoundException("[Contato] Pessoa está vazio");
 				}		
 	}
 
@@ -68,8 +67,7 @@ public class ContatoService implements ContatoServiceInterface {
 
 	@Override
 	public void delete(Long id) {
-		contatoRepository.deleteById(id);
-		
+		contatoRepository.deleteById(id);	
 	}
 
 }
